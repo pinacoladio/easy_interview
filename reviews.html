@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reviews - MockInterview Pro</title>
+    <title>Reviews - EasyInterview</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -15,16 +15,20 @@
             <div class="nav-logo">
                 <a href="index.html">
                     <i class="fas fa-microphone-alt"></i>
-                    MockInterview Pro
+                    EasyInterview
                 </a>
             </div>
             <ul class="nav-menu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="pricing.html">Pricing</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="reviews.html" class="active">Reviews</a></li>
-                <li><a href="index.html#booking" class="btn-primary">Book Interview</a></li>
+                <li><a href="index.html" data-translate="nav_home">Home</a></li>
+                <li><a href="pricing.html" data-translate="nav_pricing">Pricing</a></li>
+                <li><a href="about.html" data-translate="nav_about">About</a></li>
+                <li><a href="reviews.html" class="active" data-translate="nav_reviews">Reviews</a></li>
+                <li><a href="index.html#booking" class="btn-primary" data-translate="nav_book">Book Interview</a></li>
             </ul>
+            <div class="language-switcher">
+                <button class="lang-btn" data-lang="en" onclick="switchLanguage('en')">EN</button>
+                <button class="lang-btn" data-lang="ru" onclick="switchLanguage('ru')">RU</button>
+            </div>
             <div class="hamburger">
                 <span></span>
                 <span></span>
@@ -36,8 +40,8 @@
     <!-- Hero Section -->
     <section class="reviews-hero">
         <div class="container">
-            <h1>What Our Clients Say</h1>
-            <p>Discover how MockInterview Pro has helped thousands of professionals land their dream jobs at top companies.</p>
+            <h1 data-translate="testimonials_title">What Our Clients Say</h1>
+            <p>Discover how EasyInterview has helped thousands of professionals land their dream jobs at top companies.</p>
             <div class="hero-stats">
                 <div class="hero-stat">
                     <div class="stat-number">4.9/5</div>
@@ -80,7 +84,7 @@
                         </div>
                     </div>
                     <div class="review-content">
-                        <p>"MockInterview Pro was a game-changer for me. After struggling with technical interviews for months, I booked a session with one of their senior engineers. The feedback was incredibly detailed and actionable. Within two weeks, I landed my dream job at Google. The mock interview felt so realistic that the actual interview seemed easy in comparison!"</p>
+                        <p>"EasyInterview was a game-changer for me. After struggling with technical interviews for months, I booked a session with one of their senior engineers. The feedback was incredibly detailed and actionable. Within two weeks, I landed my dream job at Google. The mock interview felt so realistic that the actual interview seemed easy in comparison!"</p>
                     </div>
                     <div class="review-tags">
                         <span class="tag">Technical Interview</span>
@@ -109,7 +113,7 @@
                         </div>
                     </div>
                     <div class="review-content">
-                        <p>"I was transitioning from engineering to product management and needed help with behavioral interviews. My MockInterview Pro session helped me structure my answers using the STAR method and gave me confidence to discuss my leadership experiences. The interviewer's background at Amazon was invaluable - they knew exactly what the company was looking for."</p>
+                        <p>"I was transitioning from engineering to product management and needed help with behavioral interviews. My EasyInterview session helped me structure my answers using the STAR method and gave me confidence to discuss my leadership experiences. The interviewer's background at Amazon was invaluable - they knew exactly what the company was looking for."</p>
                     </div>
                     <div class="review-tags">
                         <span class="tag">Product Management</span>
@@ -317,7 +321,7 @@
     <section class="reviews-cta">
         <div class="container">
             <h2>Ready to Join Our Success Stories?</h2>
-            <p>Don't just take our word for it. Experience the difference MockInterview Pro can make in your career journey.</p>
+            <p>Don't just take our word for it. Experience the difference EasyInterview can make in your career journey.</p>
             <div class="cta-buttons">
                 <a href="index.html#booking" class="btn-primary">Book Your Session</a>
                 <a href="pricing.html" class="btn-secondary">View Pricing</a>
@@ -330,7 +334,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>MockInterview Pro</h3>
+                    <h3>EasyInterview</h3>
                     <p>Helping professionals ace their interviews and land their dream jobs.</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-linkedin"></i></a>
@@ -339,7 +343,7 @@
                     </div>
                 </div>
                 <div class="footer-section">
-                    <h4>Services</h4>
+                    <h4 data-translate="footer_services">Services</h4>
                     <ul>
                         <li><a href="#">Mock Interviews</a></li>
                         <li><a href="#">Resume Review</a></li>
@@ -348,7 +352,7 @@
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>Company</h4>
+                    <h4 data-translate="footer_company">Company</h4>
                     <ul>
                         <li><a href="about.html">About Us</a></li>
                         <li><a href="pricing.html">Pricing</a></li>
@@ -357,7 +361,7 @@
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>Support</h4>
+                    <h4 data-translate="footer_support">Support</h4>
                     <ul>
                         <li><a href="#">Help Center</a></li>
                         <li><a href="#">Privacy Policy</a></li>
@@ -367,11 +371,12 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 MockInterview Pro. All rights reserved.</p>
+                <p>&copy; 2024 EasyInterview. <span data-translate="footer_rights">All rights reserved.</span></p>
             </div>
         </div>
     </footer>
 
+    <script src="translations.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MockInterview Pro - Professional Mock Interviews</title>
+    <title>EasyInterview - Professional Mock Interviews</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -15,16 +15,20 @@
             <div class="nav-logo">
                 <a href="index.html">
                     <i class="fas fa-microphone-alt"></i>
-                    MockInterview Pro
+                    EasyInterview
                 </a>
             </div>
             <ul class="nav-menu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="pricing.html">Pricing</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="reviews.html">Reviews</a></li>
-                <li><a href="#" class="btn-primary">Book Interview</a></li>
+                <li><a href="index.html" data-translate="nav_home">Home</a></li>
+                <li><a href="pricing.html" data-translate="nav_pricing">Pricing</a></li>
+                <li><a href="about.html" data-translate="nav_about">About</a></li>
+                <li><a href="reviews.html" data-translate="nav_reviews">Reviews</a></li>
+                <li><a href="#booking" class="btn-primary" data-translate="nav_book">Book Interview</a></li>
             </ul>
+            <div class="language-switcher">
+                <button class="lang-btn" data-lang="en" onclick="switchLanguage('en')">EN</button>
+                <button class="lang-btn" data-lang="ru" onclick="switchLanguage('ru')">RU</button>
+            </div>
             <div class="hamburger">
                 <span></span>
                 <span></span>
@@ -37,17 +41,17 @@
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <h1>Master Your Next Interview</h1>
-                <p>Practice with industry experts and land your dream job. Get personalized feedback and boost your confidence with our professional mock interview service.</p>
+                <h1 data-translate="hero_title">Master Your Next Interview</h1>
+                <p data-translate="hero_subtitle">Practice with industry experts and land your dream job. Get personalized feedback and boost your confidence with our professional mock interview service.</p>
                 <div class="hero-buttons">
-                    <a href="#booking" class="btn-primary">Book Mock Interview</a>
-                    <a href="about.html" class="btn-secondary">Learn More</a>
+                    <a href="#booking" class="btn-primary" data-translate="hero_book_btn">Book Mock Interview</a>
+                    <a href="about.html" class="btn-secondary" data-translate="hero_learn_btn">Learn More</a>
                 </div>
             </div>
             <div class="hero-image">
                 <div class="hero-placeholder">
                     <i class="fas fa-video fa-5x"></i>
-                    <p>Professional Interview Simulation</p>
+                    <p data-translate="hero_placeholder">Professional Interview Simulation</p>
                 </div>
             </div>
         </div>
@@ -56,35 +60,35 @@
     <!-- Features Section -->
     <section class="features">
         <div class="container">
-            <h2>Why Choose MockInterview Pro?</h2>
+            <h2 data-translate="features_title">Why Choose EasyInterview?</h2>
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-user-tie"></i>
                     </div>
-                    <h3>Expert Interviewers</h3>
-                    <p>Practice with experienced professionals from top companies like Google, Amazon, and Microsoft.</p>
+                    <h3 data-translate="feature1_title">Expert Interviewers</h3>
+                    <p data-translate="feature1_desc">Practice with experienced professionals from top companies like Google, Amazon, and Microsoft.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <h3>Detailed Feedback</h3>
-                    <p>Receive comprehensive feedback on your performance, including areas for improvement and strengths.</p>
+                    <h3 data-translate="feature2_title">Detailed Feedback</h3>
+                    <p data-translate="feature2_desc">Receive comprehensive feedback on your performance, including areas for improvement and strengths.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-calendar-alt"></i>
                     </div>
-                    <h3>Flexible Scheduling</h3>
-                    <p>Book sessions that fit your schedule with our easy-to-use calendar system.</p>
+                    <h3 data-translate="feature3_title">Flexible Scheduling</h3>
+                    <p data-translate="feature3_desc">Book sessions that fit your schedule with our easy-to-use calendar system.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-code"></i>
                     </div>
-                    <h3>Multiple Specializations</h3>
-                    <p>Choose from various fields: Software Engineering, Product Management, Data Science, and more.</p>
+                    <h3 data-translate="feature4_title">Multiple Specializations</h3>
+                    <p data-translate="feature4_desc">Choose from various fields: Software Engineering, Product Management, Data Science, and more.</p>
                 </div>
             </div>
         </div>
@@ -93,41 +97,41 @@
     <!-- Booking Section -->
     <section id="booking" class="booking">
         <div class="container">
-            <h2>Book Your Mock Interview</h2>
+            <h2 data-translate="booking_title">Book Your Mock Interview</h2>
             <div class="booking-container">
                 <div class="filters">
-                    <h3>Filter Options</h3>
+                    <h3 data-translate="booking_filters">Filter Options</h3>
                     <div class="filter-group">
-                        <label for="specialization">Specialization:</label>
+                        <label for="specialization" data-translate="booking_specialization">Specialization:</label>
                         <select id="specialization">
-                            <option value="">All Specializations</option>
-                            <option value="software-engineering">Software Engineering</option>
-                            <option value="product-management">Product Management</option>
-                            <option value="data-science">Data Science</option>
-                            <option value="marketing">Marketing</option>
-                            <option value="sales">Sales</option>
-                            <option value="finance">Finance</option>
+                            <option value="" data-translate="spec_all">All Specializations</option>
+                            <option value="software-engineering" data-translate="spec_software">Software Engineering</option>
+                            <option value="product-management" data-translate="spec_product">Product Management</option>
+                            <option value="data-science" data-translate="spec_data">Data Science</option>
+                            <option value="marketing" data-translate="spec_marketing">Marketing</option>
+                            <option value="sales" data-translate="spec_sales">Sales</option>
+                            <option value="finance" data-translate="spec_finance">Finance</option>
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label for="time-slot">Preferred Time:</label>
+                        <label for="time-slot" data-translate="booking_time">Preferred Time:</label>
                         <select id="time-slot">
-                            <option value="">Any Time</option>
-                            <option value="morning">Morning (9AM - 12PM)</option>
-                            <option value="afternoon">Afternoon (12PM - 5PM)</option>
-                            <option value="evening">Evening (5PM - 8PM)</option>
+                            <option value="" data-translate="time_any">Any Time</option>
+                            <option value="morning" data-translate="time_morning">Morning (9AM - 12PM)</option>
+                            <option value="afternoon" data-translate="time_afternoon">Afternoon (12PM - 5PM)</option>
+                            <option value="evening" data-translate="time_evening">Evening (5PM - 8PM)</option>
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label for="duration">Duration:</label>
+                        <label for="duration" data-translate="booking_duration">Duration:</label>
                         <select id="duration">
-                            <option value="30">30 minutes</option>
-                            <option value="45">45 minutes</option>
-                            <option value="60" selected>60 minutes</option>
-                            <option value="90">90 minutes</option>
+                            <option value="30" data-translate="duration_30">30 minutes</option>
+                            <option value="45" data-translate="duration_45">45 minutes</option>
+                            <option value="60" selected data-translate="duration_60">60 minutes</option>
+                            <option value="90" data-translate="duration_90">90 minutes</option>
                         </select>
                     </div>
-                    <button class="btn-primary" onclick="applyFilters()">Apply Filters</button>
+                    <button class="btn-primary" onclick="applyFilters()" data-translate="booking_apply">Apply Filters</button>
                 </div>
                 <div class="calendar-container">
                     <div class="calendar-header">
@@ -139,9 +143,9 @@
                         <!-- Calendar will be generated by JavaScript -->
                     </div>
                     <div class="time-slots" id="time-slots">
-                        <h4>Available Time Slots</h4>
+                        <h4 data-translate="booking_slots">Available Time Slots</h4>
                         <div class="slots-container" id="slots-container">
-                            <p>Select a date to view available time slots</p>
+                            <p data-translate="booking_select_date">Select a date to view available time slots</p>
                         </div>
                     </div>
                 </div>
@@ -149,14 +153,68 @@
         </div>
     </section>
 
+    <!-- Booking Form Modal -->
+    <div id="booking-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-translate="form_title">Complete Your Booking</h2>
+                <span class="close" onclick="closeBookingModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="booking-form" enctype="multipart/form-data">
+                    <div class="booking-summary-modal">
+                        <h3 data-translate="booking_summary">Booking Summary</h3>
+                        <div class="summary-details">
+                            <p><strong data-translate="booking_date">Date:</strong> <span id="modal-date"></span></p>
+                            <p><strong data-translate="booking_time_label">Time:</strong> <span id="modal-time"></span></p>
+                            <p><strong data-translate="booking_duration_label">Duration:</strong> <span id="modal-duration"></span></p>
+                            <p><strong data-translate="booking_spec_label">Specialization:</strong> <span id="modal-specialization"></span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tg_name" data-translate="form_tg_name">Telegram Username:</label>
+                        <input type="text" id="tg_name" name="tg_name" required data-translate="form_tg_placeholder" placeholder="@username">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="full_name" data-translate="form_name">Full Name:</label>
+                        <input type="text" id="full_name" name="full_name" required data-translate="form_name_placeholder" placeholder="Your full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone" data-translate="form_phone">Phone Number:</label>
+                        <input type="tel" id="phone" name="phone" required data-translate="form_phone_placeholder" placeholder="+7 (XXX) XXX-XX-XX">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="about" data-translate="form_about">About Yourself:</label>
+                        <textarea id="about" name="about" rows="4" required data-translate="form_about_placeholder" placeholder="Tell us about your background, experience, and goals..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="resume" data-translate="form_resume">Resume (PDF):</label>
+                        <input type="file" id="resume" name="resume" accept=".pdf" required>
+                        <small>Please upload your resume in PDF format (max 5MB)</small>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeBookingModal()">Cancel</button>
+                        <button type="submit" class="btn-primary" data-translate="form_submit">Submit Booking</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Testimonials -->
     <section class="testimonials">
         <div class="container">
-            <h2>What Our Clients Say</h2>
+            <h2 data-translate="testimonials_title">What Our Clients Say</h2>
             <div class="testimonials-grid">
                 <div class="testimonial-card">
                     <div class="testimonial-content">
-                        <p>"MockInterview Pro helped me land my dream job at Google. The feedback was incredibly detailed and actionable."</p>
+                        <p>"EasyInterview helped me land my dream job at Google. The feedback was incredibly detailed and actionable."</p>
                     </div>
                     <div class="testimonial-author">
                         <div class="author-avatar">
@@ -205,7 +263,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>MockInterview Pro</h3>
+                    <h3>EasyInterview</h3>
                     <p>Helping professionals ace their interviews and land their dream jobs.</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-linkedin"></i></a>
@@ -214,7 +272,7 @@
                     </div>
                 </div>
                 <div class="footer-section">
-                    <h4>Services</h4>
+                    <h4 data-translate="footer_services">Services</h4>
                     <ul>
                         <li><a href="#">Mock Interviews</a></li>
                         <li><a href="#">Resume Review</a></li>
@@ -223,7 +281,7 @@
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>Company</h4>
+                    <h4 data-translate="footer_company">Company</h4>
                     <ul>
                         <li><a href="about.html">About Us</a></li>
                         <li><a href="pricing.html">Pricing</a></li>
@@ -232,7 +290,7 @@
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>Support</h4>
+                    <h4 data-translate="footer_support">Support</h4>
                     <ul>
                         <li><a href="#">Help Center</a></li>
                         <li><a href="#">Privacy Policy</a></li>
@@ -242,11 +300,13 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 MockInterview Pro. All rights reserved.</p>
+                <p>&copy; 2024 EasyInterview. <span data-translate="footer_rights">All rights reserved.</span></p>
             </div>
         </div>
     </footer>
 
+    <script src="translations.js"></script>
+    <script src="database.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

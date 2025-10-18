@@ -2,47 +2,14 @@
 let currentDate = new Date();
 let selectedDate = null;
 let selectedTimeSlot = null;
-let availableSlots = {};
-
-// Sample data for available time slots
-const sampleSlots = {
-    'software-engineering': {
-        'morning': ['9:00 AM', '10:00 AM', '11:00 AM'],
-        'afternoon': ['1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'],
-        'evening': ['5:00 PM', '6:00 PM', '7:00 PM']
-    },
-    'product-management': {
-        'morning': ['9:30 AM', '10:30 AM', '11:30 AM'],
-        'afternoon': ['12:30 PM', '2:30 PM', '3:30 PM'],
-        'evening': ['5:30 PM', '6:30 PM']
-    },
-    'data-science': {
-        'morning': ['9:00 AM', '10:30 AM'],
-        'afternoon': ['1:30 PM', '3:00 PM', '4:30 PM'],
-        'evening': ['6:00 PM', '7:30 PM']
-    },
-    'marketing': {
-        'morning': ['10:00 AM', '11:00 AM'],
-        'afternoon': ['2:00 PM', '3:00 PM'],
-        'evening': ['5:00 PM', '6:00 PM']
-    },
-    'sales': {
-        'morning': ['9:30 AM', '10:30 AM'],
-        'afternoon': ['1:00 PM', '2:30 PM', '4:00 PM'],
-        'evening': ['5:30 PM', '7:00 PM']
-    },
-    'finance': {
-        'morning': ['9:00 AM', '11:00 AM'],
-        'afternoon': ['1:30 PM', '3:30 PM'],
-        'evening': ['6:00 PM']
-    }
-};
+let selectedBookingData = null;
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
     initializeNavigation();
     initializeCalendar();
     initializeFilters();
+    initializeBookingForm();
     generateCalendar();
 });
 
@@ -179,7 +146,7 @@ function selectDate(date, element) {
     generateTimeSlots();
 }
 
-// Generate time slots based on filters
+// Generate time slots based on filters and database availability
 function generateTimeSlots() {
     const slotsContainer = document.getElementById('slots-container');
     if (!slotsContainer || !selectedDate) return;
@@ -190,27 +157,8 @@ function generateTimeSlots() {
 
     slotsContainer.innerHTML = '';
 
-    // Get available slots based on specialization
-    let slots = [];
-    if (specialization && sampleSlots[specialization]) {
-        if (timeSlot && sampleSlots[specialization][timeSlot]) {
-            slots = sampleSlots[specialization][timeSlot];
-        } else {
-            // Get all slots for the specialization
-            Object.values(sampleSlots[specialization]).forEach(timeSlots => {
-                slots = slots.concat(timeSlots);
-            });
-        }
-    } else {
-        // Get all available slots
-        Object.values(sampleSlots).forEach(spec => {
-            Object.values(spec).forEach(timeSlots => {
-                slots = slots.concat(timeSlots);
-            });
-        });
-        // Remove duplicates
-        slots = [...new Set(slots)];
-    }
+    // Get available slots from database
+    let slots = bookingDB.getAvailableSlots(selectedDate, specialization || null, timeSlot || null);
 
     // Sort slots
     slots.sort((a, b) => {
@@ -229,12 +177,19 @@ function generateTimeSlots() {
     });
 
     if (slots.length === 0) {
-        slotsContainer.innerHTML = '<p>No available slots for the selected filters.</p>';
+        slotsContainer.innerHTML = `<p>${t('msg_no_slots')}</p>`;
     }
 }
 
 // Select time slot
 function selectTimeSlot(time, element) {
+    // Check if slot is still available
+    if (!bookingDB.isSlotAvailable(selectedDate, time)) {
+        showNotification('This slot is no longer available. Please select another time.', 'error');
+        generateTimeSlots(); // Refresh slots
+        return;
+    }
+
     // Remove previous selection
     document.querySelectorAll('.time-slot.selected').forEach(slot => {
         slot.classList.remove('selected');
@@ -244,50 +199,228 @@ function selectTimeSlot(time, element) {
     element.classList.add('selected');
     selectedTimeSlot = time;
 
-    // Show booking confirmation
-    showBookingConfirmation();
-}
-
-// Show booking confirmation
-function showBookingConfirmation() {
-    if (!selectedDate || !selectedTimeSlot) return;
-
-    const specialization = document.getElementById('specialization').value || 'General';
+    // Prepare booking data
+    const specialization = document.getElementById('specialization').value || 'general';
     const duration = document.getElementById('duration').value;
     
-    const dateStr = selectedDate.toLocaleDateString('en-US', {
+    selectedBookingData = {
+        date: bookingDB.formatDate(selectedDate),
+        time: selectedTimeSlot,
+        duration: duration,
+        specialization: specialization
+    };
+
+    // Show booking modal
+    showBookingModal();
+}
+
+// Show booking modal
+function showBookingModal() {
+    if (!selectedBookingData) return;
+
+    const modal = document.getElementById('booking-modal');
+    const dateStr = selectedDate.toLocaleDateString(currentLanguage === 'ru' ? 'ru-RU' : 'en-US', {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric'
     });
 
-    const confirmationMessage = `
-        <div style="background: #e6fffa; border: 2px solid #00b894; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-            <h4 style="color: #00b894; margin-bottom: 0.5rem;">Booking Summary</h4>
-            <p><strong>Date:</strong> ${dateStr}</p>
-            <p><strong>Time:</strong> ${selectedTimeSlot}</p>
-            <p><strong>Duration:</strong> ${duration} minutes</p>
-            <p><strong>Specialization:</strong> ${specialization.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
-            <button class="btn-primary" onclick="confirmBooking()" style="margin-top: 1rem;">Confirm Booking</button>
-        </div>
-    `;
+    // Update modal content
+    document.getElementById('modal-date').textContent = dateStr;
+    document.getElementById('modal-time').textContent = selectedBookingData.time;
+    document.getElementById('modal-duration').textContent = `${selectedBookingData.duration} ${currentLanguage === 'ru' ? 'минут' : 'minutes'}`;
+    document.getElementById('modal-specialization').textContent = getSpecializationName(selectedBookingData.specialization);
 
-    const slotsContainer = document.getElementById('slots-container');
-    slotsContainer.innerHTML += confirmationMessage;
+    // Show modal
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
 }
 
-// Confirm booking
-function confirmBooking() {
-    alert('Booking confirmed! You will receive a confirmation email shortly with the meeting details.');
+// Close booking modal
+function closeBookingModal() {
+    const modal = document.getElementById('booking-modal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
     
-    // Reset selections
+    // Reset form
+    document.getElementById('booking-form').reset();
+}
+
+// Get specialization name for display
+function getSpecializationName(spec) {
+    const names = {
+        'general': currentLanguage === 'ru' ? 'Общее' : 'General',
+        'software-engineering': currentLanguage === 'ru' ? 'Разработка ПО' : 'Software Engineering',
+        'product-management': currentLanguage === 'ru' ? 'Продакт-менеджмент' : 'Product Management',
+        'data-science': 'Data Science',
+        'marketing': currentLanguage === 'ru' ? 'Маркетинг' : 'Marketing',
+        'sales': currentLanguage === 'ru' ? 'Продажи' : 'Sales',
+        'finance': currentLanguage === 'ru' ? 'Финансы' : 'Finance'
+    };
+    return names[spec] || spec;
+}
+
+// Initialize booking form
+function initializeBookingForm() {
+    const form = document.getElementById('booking-form');
+    if (!form) return;
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        handleBookingSubmission();
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(e) {
+        const modal = document.getElementById('booking-modal');
+        if (e.target === modal) {
+            closeBookingModal();
+        }
+    });
+}
+
+// Handle booking form submission
+function handleBookingSubmission() {
+    const form = document.getElementById('booking-form');
+    const formData = new FormData(form);
+    
+    // Validate form
+    if (!validateBookingForm(formData)) {
+        return;
+    }
+
+    // Check if slot is still available
+    if (!bookingDB.isSlotAvailable(selectedDate, selectedBookingData.time)) {
+        showNotification(currentLanguage === 'ru' ? 
+            'Этот слот больше недоступен. Пожалуйста, выберите другое время.' : 
+            'This slot is no longer available. Please select another time.', 'error');
+        closeBookingModal();
+        generateTimeSlots();
+        return;
+    }
+
+    // Prepare booking data
+    const bookingData = {
+        ...selectedBookingData,
+        tg_name: formData.get('tg_name'),
+        full_name: formData.get('full_name'),
+        phone: formData.get('phone'),
+        about: formData.get('about'),
+        resume_name: formData.get('resume').name
+    };
+
+    try {
+        // Save booking to database
+        const booking = bookingDB.addBooking(bookingData);
+        
+        // Show success message
+        showNotification(t('msg_booking_success'), 'success');
+        
+        // Close modal and reset
+        closeBookingModal();
+        resetBookingState();
+        
+        // Refresh time slots
+        generateTimeSlots();
+        
+        // Log booking for admin (in real app, this would be sent to server)
+        console.log('New booking created:', booking);
+        
+    } catch (error) {
+        console.error('Booking error:', error);
+        showNotification(currentLanguage === 'ru' ? 
+            'Произошла ошибка при бронировании. Пожалуйста, попробуйте еще раз.' : 
+            'An error occurred while booking. Please try again.', 'error');
+    }
+}
+
+// Validate booking form
+function validateBookingForm(formData) {
+    const tgName = formData.get('tg_name');
+    const fullName = formData.get('full_name');
+    const phone = formData.get('phone');
+    const about = formData.get('about');
+    const resume = formData.get('resume');
+
+    // Validate Telegram username
+    if (!tgName || !tgName.startsWith('@')) {
+        showNotification(currentLanguage === 'ru' ? 
+            'Пожалуйста, введите корректное имя пользователя Telegram (начинающееся с @)' : 
+            'Please enter a valid Telegram username (starting with @)', 'error');
+        return false;
+    }
+
+    // Validate full name
+    if (!fullName || fullName.trim().length < 2) {
+        showNotification(currentLanguage === 'ru' ? 
+            'Пожалуйста, введите ваше полное имя' : 
+            'Please enter your full name', 'error');
+        return false;
+    }
+
+    // Validate phone
+    if (!phone || phone.length < 10) {
+        showNotification(currentLanguage === 'ru' ? 
+            'Пожалуйста, введите корректный номер телефона' : 
+            'Please enter a valid phone number', 'error');
+        return false;
+    }
+
+    // Validate about section
+    if (!about || about.trim().length < 20) {
+        showNotification(currentLanguage === 'ru' ? 
+            'Пожалуйста, расскажите больше о себе (минимум 20 символов)' : 
+            'Please tell us more about yourself (minimum 20 characters)', 'error');
+        return false;
+    }
+
+    // Validate resume file
+    if (!resume || resume.size === 0) {
+        showNotification(currentLanguage === 'ru' ? 
+            'Пожалуйста, загрузите ваше резюме в формате PDF' : 
+            'Please upload your resume in PDF format', 'error');
+        return false;
+    }
+
+    if (resume.type !== 'application/pdf') {
+        showNotification(currentLanguage === 'ru' ? 
+            'Резюме должно быть в формате PDF' : 
+            'Resume must be in PDF format', 'error');
+        return false;
+    }
+
+    if (resume.size > 5 * 1024 * 1024) { // 5MB limit
+        showNotification(currentLanguage === 'ru' ? 
+            'Размер файла резюме не должен превышать 5MB' : 
+            'Resume file size must not exceed 5MB', 'error');
+        return false;
+    }
+
+    return true;
+}
+
+// Reset booking state
+function resetBookingState() {
     selectedDate = null;
     selectedTimeSlot = null;
+    selectedBookingData = null;
+    
+    // Clear calendar selection
     document.querySelectorAll('.calendar-day.selected').forEach(day => {
         day.classList.remove('selected');
     });
-    document.getElementById('slots-container').innerHTML = '<p>Select a date to view available time slots</p>';
+    
+    // Clear time slot selection
+    document.querySelectorAll('.time-slot.selected').forEach(slot => {
+        slot.classList.remove('selected');
+    });
+    
+    // Reset slots container
+    const slotsContainer = document.getElementById('slots-container');
+    if (slotsContainer) {
+        slotsContainer.innerHTML = `<p>${t('booking_select_date')}</p>`;
+    }
 }
 
 // Initialize filters
@@ -320,7 +453,7 @@ function applyFilters() {
     if (selectedDate) {
         generateTimeSlots();
     } else {
-        alert('Please select a date first to view available time slots.');
+        showNotification(t('msg_select_date'), 'info');
     }
 }
 
@@ -365,12 +498,6 @@ function initializeScrollAnimations() {
 // Initialize scroll animations when DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeScrollAnimations);
 
-// Form validation for contact forms (if added later)
-function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-}
-
 // Utility function for showing notifications
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
@@ -379,14 +506,16 @@ function showNotification(message, type = 'success') {
         position: fixed;
         top: 20px;
         right: 20px;
-        background: ${type === 'success' ? '#00b894' : '#e74c3c'};
+        background: ${type === 'success' ? '#00b894' : type === 'error' ? '#e74c3c' : '#3498db'};
         color: white;
         padding: 1rem 2rem;
         border-radius: 6px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        z-index: 10000;
+        z-index: 10001;
         transform: translateX(100%);
         transition: transform 0.3s ease;
+        max-width: 300px;
+        word-wrap: break-word;
     `;
     notification.textContent = message;
     
@@ -397,13 +526,15 @@ function showNotification(message, type = 'success') {
         notification.style.transform = 'translateX(0)';
     }, 100);
     
-    // Remove after 3 seconds
+    // Remove after 5 seconds
     setTimeout(() => {
         notification.style.transform = 'translateX(100%)';
         setTimeout(() => {
-            document.body.removeChild(notification);
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
         }, 300);
-    }, 3000);
+    }, 5000);
 }
 
 // Add loading states for better UX
@@ -417,3 +548,35 @@ function showLoading(element) {
         element.disabled = false;
     };
 }
+
+// Admin functions (for testing and management)
+function getBookingStats() {
+    return bookingDB.getStats();
+}
+
+function exportBookings() {
+    const data = bookingDB.exportBookings();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `easyinterview_bookings_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function clearAllBookings() {
+    if (confirm('Are you sure you want to clear all bookings? This cannot be undone.')) {
+        bookingDB.clearAll();
+        generateTimeSlots();
+        showNotification('All bookings cleared', 'info');
+    }
+}
+
+// Make admin functions available in console
+window.adminFunctions = {
+    getStats: getBookingStats,
+    exportBookings: exportBookings,
+    clearAll: clearAllBookings,
+    getBookings: () => bookingDB.getBookings()
+};
